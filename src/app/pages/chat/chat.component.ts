@@ -26,8 +26,9 @@ import { MessageBubbleComponent } from "../../components/message-bubble/message-
   imports: [CommonModule, FormsModule],
   template: `
     <div class="chat-container">
-      <div class="chat-header" [attr.data-emoji]="headerEmoji">
+      <div class="chat-header">
         {{ headerTitle }}
+        <span class="header-emoji" (click)="logout()" title="Logout">{{ headerEmoji }}</span>
       </div>
       
       <div class="chat-messages" #messageContainer>
@@ -114,11 +115,20 @@ import { MessageBubbleComponent } from "../../components/message-bubble/message-
       flex-shrink: 0; /* Prevent header from shrinking */
     }
 
-    .chat-header::after {
-      content: "💖";
+    /* Add styles for the clickable emoji span */
+    .header-emoji {
       position: absolute;
       right: 20px;
-      top: 20px;
+      top: 50%; /* Center vertically */
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: inherit; /* Match header font size or set explicitly */
+      user-select: none; /* Prevent text selection */
+      transition: transform 0.2s ease; /* Add slight hover effect */
+    }
+    
+    .header-emoji:hover {
+        transform: translateY(-50%) scale(1.1); /* Slightly enlarge on hover */
     }
 
     .chat-messages {
@@ -401,5 +411,12 @@ export class ChatComponent implements OnInit, OnDestroy, AfterViewChecked {
     clearInterval(this.recordingInterval)
     this.isRecording = false
     }
+  }
+
+  logout(): void {
+    // Optional: Add confirmation dialog if desired
+    console.log('Logging out...');
+    this.authService.logout(); // Call the service method
+    this.router.navigate(['/login']); // Navigate to login page
   }
 }
